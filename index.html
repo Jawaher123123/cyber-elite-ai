@@ -677,6 +677,23 @@ button,a,.role,.pcase,.case-open{touch-action:manipulation}
   .p-hero-img{inset:0 auto 0 0;width:64%;object-position:50% 34%}
   .p-hero::before{background:linear-gradient(90deg,rgba(3,14,17,.15) 0%,rgba(3,14,17,.04) 22%,rgba(3,14,17,.7) 44%,rgba(3,14,17,.97) 60%)}
 }
+
+/* ===== إضافة العرض الرسمي: المراقبة الذكية للهاتف ===== */
+.live-monitor{margin:0 0 18px;padding:18px;border:1px solid rgba(201,169,103,.28);border-radius:22px;background:linear-gradient(145deg,rgba(11,35,43,.92),rgba(7,27,34,.96));box-shadow:0 18px 44px rgba(0,0,0,.16)}
+.live-monitor-head{display:flex;align-items:center;justify-content:space-between;gap:12px;margin-bottom:14px}
+.live-monitor-title{display:flex;align-items:center;gap:10px;font-weight:800}.live-monitor-title .ico{width:22px;height:22px}
+.live-status{display:inline-flex;align-items:center;gap:7px;padding:7px 10px;border-radius:999px;border:1px solid rgba(77,214,159,.35);background:rgba(77,214,159,.10);font-size:12px;font-weight:800}
+.live-status:before{content:"";width:8px;height:8px;border-radius:50%;background:#4dd69f;box-shadow:0 0 0 5px rgba(77,214,159,.10)}
+.live-monitor-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:10px}.live-ch{padding:13px 12px;border-radius:16px;background:rgba(255,255,255,.045);border:1px solid rgba(255,255,255,.08);display:grid;gap:5px}
+.live-ch b{display:flex;align-items:center;gap:7px;font-size:14px}.live-ch small{color:var(--fog);font-size:11px;line-height:1.5}.live-ch .ico{width:18px;height:18px}
+.live-monitor-note{margin:12px 0 0;color:var(--fog);font-size:12px;line-height:1.7}
+.risk-word{display:inline-flex;align-items:center;justify-content:center;min-width:90px;padding:7px 12px;border-radius:999px;font-weight:900;font-size:13px}
+.risk-word.low{background:rgba(77,214,159,.12);border:1px solid rgba(77,214,159,.35)}
+.risk-word.mid{background:rgba(238,184,83,.12);border:1px solid rgba(238,184,83,.38)}
+.risk-word.high{background:rgba(255,95,95,.12);border:1px solid rgba(255,95,95,.42)}
+.actions.threat-actions{margin-top:10px;padding-top:10px;border-top:1px solid rgba(255,255,255,.08)}
+@media(max-width:700px){.live-monitor-grid{grid-template-columns:1fr}.live-monitor-head{align-items:flex-start;flex-direction:column}.risk-word{min-width:78px}}
+
 </style>
 </head>
 <body data-view="home" data-screen="gate">
@@ -945,6 +962,18 @@ button,a,.role,.pcase,.case-open{touch-action:manipulation}
           <p class="note">يحفظ هذا النموذج التحذيرات داخل المتصفح على هذا الجهاز فقط، ويمكن حذفها بمسح بيانات المتصفح. ليس سجلا رسميا موثقا.</p>
         </div>
       </header>
+      <section class="live-monitor" aria-label="المراقبة الذكية للهاتف">
+        <div class="live-monitor-head">
+          <div class="live-monitor-title"><svg class="ico" aria-hidden="true"><use href="#i-shield"/></svg><span>المراقبة الذكية للهاتف</span></div>
+          <span class="live-status">نشطة — محاكاة تجريبية</span>
+        </div>
+        <div class="live-monitor-grid">
+          <div class="live-ch"><b><svg class="ico" aria-hidden="true"><use href="#i-phone"/></svg>المكالمات</b><small>رصد مؤشرات الاتصال المشبوه والتنبيه قبل التفاعل.</small></div>
+          <div class="live-ch"><b><svg class="ico" aria-hidden="true"><use href="#i-msg"/></svg>الرسائل</b><small>تحليل نصوص الاحتيال وطلبات الرموز والتحويلات.</small></div>
+          <div class="live-ch"><b><svg class="ico" aria-hidden="true"><use href="#i-link"/></svg>الروابط</b><small>فحص مؤشرات الروابط المشبوهة قبل فتحها.</small></div>
+        </div>
+        <p class="live-monitor-note">هذا الجزء يوضح آلية النظام المقترحة داخل الهاتف. النموذج الحالي يحاكي المتابعة ولا يراقب الهاتف فعليًا.</p>
+      </section>
       <button class="sim-btn" type="button" data-act="sim-alert"><svg class="ico" aria-hidden="true"><use href="#i-bell"/></svg>تجربة تنبيه وارد من الهاتف</button>
       <div id="logsWrap"></div>
     </section>
@@ -989,7 +1018,7 @@ button,a,.role,.pcase,.case-open{touch-action:manipulation}
       </div>
     </section>
 
-    <footer class="foot">تصور أولي لفكرة النخبة السيبرانية AI — لا يوفر حماية فعلية أو رصدا تلقائيا أو بلاغات رسمية</footer>
+    <footer class="foot">نموذج تجريبي لمشروع النخبة السيبرانية AI — يحاكي الرصد والتنبيه والحظر والتحقق ولا يراقب الهاتف فعليًا</footer>
   </main>
 
   <nav class="dock" aria-label="التنقل الرئيسي">
@@ -1732,20 +1761,29 @@ function runScan(){
 }
 function renderResult(r,a){
   result.className='result lv-'+a.level;
-  var verdict=a.suspected?'تنبيه: مؤشرات تستدعي التحقق':'لا توجد مؤشرات واضحة في الفحص التجريبي';
+  var riskLabel=a.level==='high'?'خطر':a.level==='mid'?'مشبوه':'آمن مبدئيًا';
+  var verdict=a.level==='high'?'خطر — لا تتفاعل مع المحتوى':a.level==='mid'?'مشبوه — يحتاج إلى تحقق':'آمن مبدئيًا — لا توجد مؤشرات واضحة';
   var flags=a.flags.length?'<ul class="flags">'+a.flags.map(function(f){return '<li class="flag f-'+f.k+'"><i></i>'+f.label+'</li>'}).join('')+'</ul>':'<p class="no-flags">لم تُرصد كلمات أو روابط من قائمة المؤشرات التجريبية.</p>';
   result.innerHTML=
-    '<div class="verdict"><span class="verdict-ico">'+icon(a.suspected?'i-alert':'i-shield-check')+'</span><div><h3>'+verdict+'</h3><span class="kind-tag">'+icon(kindIcon(r.kind))+esc(r.kind)+'</span></div></div>'+
+    '<div class="verdict"><span class="verdict-ico">'+icon(a.level==='low'?'i-shield-check':'i-alert')+'</span><div><h3>'+verdict+'</h3><span class="kind-tag">'+icon(kindIcon(r.kind))+esc(r.kind)+'</span></div><span class="risk-word '+a.level+'">'+riskLabel+'</span></div>'+
     '<div class="gauge" role="img" aria-label="درجة الخطورة التقديرية '+a.score+' من 100، المستوى '+LV[a.level]+'"><div class="gauge-head"><span class="gauge-lbl">درجة الخطورة التقديرية</span><span class="gauge-val" dir="ltr"><b class="gauge-num">0</b><small>/100</small></span><span class="lvl-chip">'+LV[a.level]+'</span></div>'+
     '<div class="gauge-scale"><i></i><i></i><i></i><span class="needle"></span></div><div class="gauge-legend"><span>منخفض</span><span>متوسط</span><span>مرتفع</span></div></div>'+
     '<div class="evidence"><h4>المحتوى بعد الفحص</h4><p class="ev-text" dir="auto">'+marked(r.target,a.hits)+'</p>'+flags+'</div>'+
     '<p class="advice">'+icon('i-info')+'<span>النتيجة توضيحية فقط ولا تثبت سلامة المحتوى أو خطورته. لا تفتح الروابط غير الموثوقة ولا تشارك رموز التحقق.</span></p>'+
     '<p class="stamp">'+icon('i-clock')+'وقت التنبيه: '+esc(when(r))+'</p>'+
+    '<div class="actions threat-actions"><button class="btn btn-brass" type="button" data-act="scan-block" data-id="'+r.id+'">'+icon('i-shield')+'حظر / رفض</button><button class="btn btn-ghost" type="button" data-act="scan-verify" data-id="'+r.id+'">'+icon('i-check')+'تحقق من المصدر</button></div>'+
     '<div class="actions"><button class="btn btn-brass" type="button" data-report="'+r.id+'">'+icon('i-flag')+'إرسال بلاغ إلى مركز منطقتك</button><button class="btn btn-ghost" type="button" data-go="shield">عرض سجل التحذيرات</button></div>';
   var needle=$('.needle',result),num=$('.gauge-num',result);
   if(reduced){needle.style.right=a.score+'%';num.textContent=a.score;return}
   requestAnimationFrame(function(){requestAnimationFrame(function(){needle.style.right=a.score+'%'})});countUp(num,a.score,950);
 }
+function scanDecision(id,action){
+  var r=null;records.forEach(function(x){if(Number(x.id)===Number(id))r=x});if(!r)return;
+  if(action==='block'){r.status='تم الحظر / الرفض تجريبياً';r.decision='deny';save();renderCounts(false);toast('تم تسجيل الحظر في سجل التحذيرات');}
+  else{r.status='تم اختيار التحقق من المصدر';r.decision='verify';save();renderCounts(false);openSheet('<h3>التحقق من المصدر</h3><p class="sub">تحقق من الجهة عبر قنواتها الرسمية فقط، ولا تستخدم الرقم أو الرابط الموجود داخل الرسالة المشبوهة.</p><div class="row"><button class="btn btn-brass" type="button" data-go="shield">عرض السجل</button><button class="btn btn-ghost" type="button" data-act="close">إغلاق</button></div>');}
+  if(current==='shield')renderLogs();
+}
+
 function reportRecord(id,stay){
   var r=null;records.forEach(function(x){if(Number(x.id)===id)r=x});if(!r)return;
   ensureCenter(function(){
@@ -2005,6 +2043,8 @@ document.addEventListener('click',function(e){
     case 'area':chooseArea(id);break;
     case 'area-gps':var th=sheetCtx.then;closeSheet();autoLocate(th,false);break;
     case 'sim-alert':simAlert();break;
+    case 'scan-block':scanDecision(id,'block');break;
+    case 'scan-verify':scanDecision(id,'verify');break;
     case 'al-deny':decideAlert('deny');break;
     case 'al-allow':decideAlert('allow');break;
     case 'ai-ask':aiAsk();break;
